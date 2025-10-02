@@ -331,27 +331,53 @@ INSTRUCTIONS FOR YOUR RESPONSE:
 """
 
     try:
-        # GPT-5 has restrictions: no temperature, no max_tokens
-        if "gpt-5" in model:
-            response = openai_client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": context_prompt}
-                ]
-            )
-        else:
-            response = openai_client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": context_prompt}
-                ],
-                temperature=0.7,
-                max_tokens=max_tokens
-            )
+        import random
+        from concurrent.futures import ThreadPoolExecutor
 
-        august_response = response.choices[0].message.content.strip()
+        # Function to get response from OpenAI (runs in thread)
+        def get_august_response():
+            if "gpt-5" in model:
+                response = openai_client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": context_prompt}
+                    ]
+                )
+            else:
+                response = openai_client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": context_prompt}
+                    ],
+                    temperature=0.7,
+                    max_tokens=max_tokens
+                )
+            return response.choices[0].message.content.strip()
+
+        # Run in executor to make it non-blocking
+        loop = asyncio.get_event_loop()
+        executor = ThreadPoolExecutor(max_workers=1)
+
+        # Try to get response within 5 seconds
+        response_task = loop.run_in_executor(executor, get_august_response)
+
+        try:
+            august_response = await asyncio.wait_for(response_task, timeout=5.0)
+        except asyncio.TimeoutError:
+            # If it takes longer than 5 seconds, send a quick acknowledgment
+            acknowledgments = [
+                "Hold on, thinking...",
+                "Give me a sec...",
+                "One moment...",
+                "Let me check that...",
+                "Hang on...",
+            ]
+            await update.message.reply_text(random.choice(acknowledgments))
+
+            # Now wait for the full response (no timeout)
+            august_response = await response_task
 
         # Check if August wants to create a task
         if august_response.startswith("TASK_CREATE:"):

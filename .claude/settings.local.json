@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(test:*)",
+      "Bash(./venv/bin/pip list)",
+      "Bash(git init:*)",
+      "Bash(./venv/bin/python bot.py)",
+      "Bash(python3.12:*)",
+      "Bash(./venv/bin/pip install python-telegram-bot==20.7 openai==1.12.0)",
+      "Bash(pkill:*)",
+      "Read(//Users/davidquiring/Documents/Documents - MacBook Pro von David/GitHub/lovemail/**)",
+      "Read(//Users/davidquiring/**)",
+      "Bash(chmod:*)",
+      "Bash(./find_vibe.sh)",
+      "Bash(lsof:*)",
+      "Bash(curl -s http://127.0.0.1:52822/api/projects)",
+      "Bash(curl -s \"http://127.0.0.1:52822/api/projects/04818b0a-f69b-42c0-858a-4c9132723523/tasks\")",
+      "Bash(python3:*)",
+      "Bash(curl -s \"http://127.0.0.1:52822/api/agents\")",
+      "Bash(./venv/bin/python:*)",
+      "Bash(./venv/bin/pip install requests)",
+      "Bash(curl -s \"http://127.0.0.1:52822/api/projects/04818b0a-f69b-42c0-858a-4c9132723523\")",
+      "Bash(curl -s \"http://127.0.0.1:52822/api/tasks?project_id=04818b0a-f69b-42c0-858a-4c9132723523\")",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: August AI Product Manager Bot\n\nAdd complete AI-powered Product Manager bot for Telegram with:\n- GPT-5 powered conversational AI for deep technical discussions\n- Task management with 7 states and 4 priority levels\n- 7 specialized AI agents (Architect, Engineer, Designer, QA, Analyst, Docs)\n- Vibe Kanban integration for bidirectional task sync\n- Proactive notifications for task state changes\n- Intelligent message routing (technical/status/task creation)\n- Telegram inline keyboard buttons for mobile UX\n- SQLite persistence with task history\n- Human-like, conversational communication style\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

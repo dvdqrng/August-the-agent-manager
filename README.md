@@ -2,6 +2,14 @@
 
 August is an AI-powered Product Manager bot for Telegram that helps you manage development workflows, coordinate specialized agents, and have deep technical discussions about your codebase.
 
+## Quick Start
+
+**Want to use August right away?**
+
+👉 **[Quick Start Guide](QUICK_START.md)** - Get running in 2 minutes with the shared bot!
+
+Or continue reading for full documentation.
+
 ## Overview
 
 August acts as your PM, coordinating a team of 7 specialized AI agents, managing tasks through their lifecycle, and providing project oversight.

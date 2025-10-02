@@ -1,0 +1,15 @@
+{
+  "telegram_user_id": 0,
+  "repo_path": "/path/to/your/codebase",
+  "project_name": "MyProject",
+  "vibe_kanban": {
+    "enabled": false,
+    "url": "http://127.0.0.1:52822",
+    "project_id": ""
+  },
+  "notifications": {
+    "enabled": true,
+    "daily_summary_time": "09:00",
+    "standup_reminder": true
+  }
+}

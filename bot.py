@@ -1,4 +1,5 @@
 import os
+import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 from openai import OpenAI
@@ -315,19 +316,17 @@ INSTRUCTIONS FOR YOUR RESPONSE:
 **If the user asks about code/architecture/implementation ("what is X doing", "how does Y work", "can you look into Z"):**
 - This is a TECHNICAL DISCUSSION, not task management
 - NO task creation! Just answer the technical question
-- Keep it CONVERSATIONAL and CONCISE - you're chatting with a colleague, not writing docs
-- Share 2-3 key insights, not exhaustive lists
+- SPLIT your response using "---" to create separate messages (like texting)
+- Keep each message 2-3 sentences max
 - Use casual language: "checks if user is legit" not "validates authentication credentials"
-- Short sentences, 1-2 per point
-- Get to what matters, skip the obvious stuff
-- If they want more detail, they'll ask
+- Get to the point - no fluff
 
 **General:**
 - Be decisive and take ownership
 - Don't ask unnecessary clarifying questions
 - Format in Telegram-friendly Markdown
 - NO "thinking" statements - just share your insight directly
-- Talk like a human, not a bot
+- Talk like texting a friend - short, punchy messages split with "---"
 - Remember: You're the PM. Act like it!
 """
 
@@ -398,25 +397,24 @@ INSTRUCTIONS FOR YOUR RESPONSE:
                 await update.message.reply_text(full_response, parse_mode='Markdown')
                 return
 
-        # Send response, handle Markdown parsing errors
-        try:
-            # Check if response is too long
-            if len(august_response) > 4000:
-                chunks = [august_response[i:i+4000] for i in range(0, len(august_response), 4000)]
-                for i, chunk in enumerate(chunks):
-                    try:
-                        await update.message.reply_text(
-                            f"**Part {i+1}/{len(chunks)}**\n\n{chunk}",
-                            parse_mode='Markdown'
-                        )
-                    except Exception:
-                        # If Markdown fails, send as plain text
-                        await update.message.reply_text(f"Part {i+1}/{len(chunks)}\n\n{chunk}")
-            else:
-                await update.message.reply_text(august_response, parse_mode='Markdown')
-        except Exception:
-            # If Markdown parsing fails, send as plain text
-            await update.message.reply_text(august_response)
+        # Split response into multiple messages if August used "---"
+        messages = august_response.split('---')
+
+        for msg in messages:
+            msg = msg.strip()
+            if not msg:
+                continue
+
+            # Send each message separately with a small delay
+            try:
+                await update.message.reply_text(msg, parse_mode='Markdown')
+            except Exception:
+                # If Markdown parsing fails, send as plain text
+                await update.message.reply_text(msg)
+
+            # Small delay between messages to feel more human
+            if len(messages) > 1:
+                await asyncio.sleep(0.5)
 
     except Exception as e:
         await update.message.reply_text(f"Error: {str(e)}")
